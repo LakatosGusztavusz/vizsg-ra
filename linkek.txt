@@ -1,0 +1,4 @@
+https://www.digitalocean.com/community/tutorials/linux-commands
+https://gocslaszlo.hu/oktatas/linux.html
+https://activedirectorypro.com/how-to-configure-a-domain-password-policy/
+https://www.liquidweb.com/blog/create-a-mysql-user-on-linux-via-command-line/
