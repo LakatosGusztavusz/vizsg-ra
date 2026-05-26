@@ -1,0 +1,26 @@
+ELSŐ
+New-ADUser -Name "user1" -SamAccountName "user1" -UserPrincipalName "user1@domain.com" -Path "OU=gyártás,DC=domain,DC=com" -AccountPassword (ConvertTo-SecureString "Jelszó123!" -AsPlainText -Force) -Enabled $true
+
+1. Létrehozni a gyártók nevű globális biztonsági csoportot:
+New-ADGroup -Name "gyártók" -GroupScope Global -GroupCategory Security -Path
+"OU=gyártás,DC=domain,DC=com"
+2. Hozzáadni a user1 felhasználót a gyártók csoporthoz:
+Add-ADGroupMember -Identity "gyártók" -Members "user1"
+
+MÁSODIK
+New-ADUser -Name "jojart.emese" -SamAccountName "jojart.emese" -UserPrincipalName "jojart.emese@domain.com" -Path "OU=gyártás,DC=domain,DC=com" -AccountPassword (ConvertTo-SecureString "Jelszó123!" -AsPlainText -Force) -Enabled $true
+
+1. Létrehozni a technikai nevű globális biztonsági csoportot:
+New-ADGroup -Name "technikai" -GroupScope Global -GroupCategory Security -Path
+"OU=technikaiak,DC=domain,DC=com"
+2. Hozzáadni jojart.emese felhasználót a gyártók csoporthoz:
+Add-ADGroupMember -Identity "technikai" -Members "jojart.emese"
+
+HARMADIK
+New-ADUser -Name "jojart.emese" -SamAccountName "jojart.emese" -UserPrincipalName "jojart.emese@domain.com" -Path "OU=gyártás,DC=domain,DC=com" -AccountPassword (ConvertTo-SecureString "Jelszó123!" -AsPlainText -Force) -Enabled $true
+
+1. Létrehozni a technikai nevű globális biztonsági csoportot:
+New-ADGroup -Name "technikai" -GroupScope Global -GroupCategory Security -Path
+"OU=technikaiak,DC=domain,DC=com"
+2. Hozzáadni jojart.emese felhasználót a gyártók csoporthoz:
+Add-ADGroupMember -Identity "technikai" -Members "jojart.emese"
