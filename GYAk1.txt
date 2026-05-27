@@ -1,0 +1,99 @@
+SW1-GYAR:	
+interface FastEthernet0/14	
+switchport mode access
+	
+SW2-GYAR:	
+interface FastEthernet0/14	
+switchport mode access	
+interface FastEthernet0/24	
+switchport mode access	
+
+SW1-GYAR:	
+interface FastEthernet0/14	
+switchport access vlan 14	
+SW2-GYAR:	
+interface FastEthernet0/14	
+switchport access vlan 14	
+interface FastEthernet0/24	
+switchport access vlan 31	
+interface GigabitEthernet0/1	
+switchport trunk allowed vlan 14,24	
+switchport mode trunk	
+interface GigabitEthernet0/2	
+switchport trunk allowed vlan 14,24	
+switchport mode trunk	
+interface GigabitEthernet0/1	
+switchport trunk allowed vlan 14,24	
+switchport mode trunk
+
+interface FastEthernet0/1.14            RTR_GYAR	
+encapsulation dot1Q 14	
+ip address 192.168.2.1 255.255.255.192	
+interface FastEthernet0/1.24            RTR_GYAR	
+encapsulation dot1Q 24	
+ip address 192.168.2.129 255.255.255.252	
+interface FastEthernet0/0            RTR_GYAR	
+ip address 172.16.0.1 255.255.0.0	
+interface GigabitEthernet0/0            RTR_IRODA	
+ip address 172.16.0.2 255.255.0.0	
+interface GigabitEthernet0/1            RTR_IRODA	
+ip address 192.168.1.1 255.255.255.0	
+
+ip dhcp pool PC	
+network 192.168.2.0 255.255.255.192	
+default-router 192.168.2.1	
+dns-server 94.78.52.3	
+ip dhcp excluded-address 192.168.2.1 192.168.2.5	
+A WIFI vezeték nélküli forgalomirányító belső hálózatához tartozó IP-címét helyesen beállította (192.168.24.X/24) és	
+a DHCP szolgáltatásánál a kezdőcímet (24) és a maximális kliensszámot (27) helyesen megadta.	
+A WIFI vezeték nélküli forgalomirányítón az SSID-t GYAR_WIFI-re állította.	
+A WIFI vezeték nélküli forgalomirányítón WPA2-PSK hitelesítést használt GYAR456789 jelszóval és AES titkosítással.	
+A vezeték nélküli klienst csatlakoztatta a vezeték nélküli hálózathoz. 1 pont A pont csak akkor jár, ha a vezeték nélküli hálózat nem alapértelmezett beállítású.	
+show ip ospf neighbor	
+1.1.1.1 1 FULL/DR 00:00:32 172.16.0.1 GigabitEthernet0/0	
+2.2.2.2 1 FULL/BDR 00:00:39 172.16.0.2 FastEthernet0/0	
+
+router ospf 10        RTR_GYAR	1
+router-id 1.1.1.1	
+log-adjacency-changes	
+network 172.16.0.0 0.0.255.255 area 0	
+router ospf 10        RTR_IRODA	1
+router-id 2.2.2.2	
+log-adjacency-changes	
+network 172.16.0.0 0.0.255.255 area 0	
+ip route 0.0.0.0 0.0.0.0 88.24.57.1	1
+
+ip access-list extended GYAR	
+deny ip 192.168.1.0 0.0.0.255 192.168.2.128 0.0.0.3	
+permit ip any any
+	
+Címfordítás beállítása	
+ip nat inside source static 192.168.1.20 10.10.10.6	
+ip nat inside source static 192.168.1.10 10.10.10.5	
+access-list 1 permit 192.168.2.0 0.0.0.255	
+ip nat pool NAT 10.10.10.3 10.10.10.3 netmask 255.255.255.248	
+	
+ip nat inside source list 1 pool NAT overload	
+
+interface GigabitEthernet0/0	
+ip nat outside	
+interface GigabitEthernet0/1	
+ip nat inside	
+interface FastEthernet0/0	
+ip nat outside	
+interface FastEthernet0/1.14	
+ip nat inside	
+interface FastEthernet0/1.24	
+ip nat inside	
+
+hostname RTR_GYAR	
+enable password gyarPWD	
+username admin password gyarPWD	
+crypto key generate rsa general-keys                Kulcs létezésének ellenőrzése: show crypto key mypubkey rsa	
+Írjuk be: 1024 /ENTER/	
+ip domain name gyar.hu	
+ip ssh version 2	
+line vty 0 4	
+transport input ssh	
+access-class SSH in	
+login local	
